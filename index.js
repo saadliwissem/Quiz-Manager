@@ -2,8 +2,14 @@ const express = require("express")
 const dotenv = require('dotenv')
 const mongoose = require("mongoose")
 const pharmacyRoutes = require("./routes/pharmacyRoutes");
+const medicineRoutes = require("./routes/medicineRoutes");
+
 const app= express()
 const bodyParser = require("body-parser");
+
+//cors 
+const cors = require('cors');
+app.use(cors());
 // Middleware
 app.use(bodyParser.json());
 //mongoose connection
@@ -26,6 +32,8 @@ mongoose.connection.on("connected",()=>{
 })
 
 app.use("/pharmacies", pharmacyRoutes);
+app.use("/medicines", medicineRoutes);
+
 
 
 const port =3117
