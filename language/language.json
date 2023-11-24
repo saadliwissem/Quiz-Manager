@@ -83,10 +83,13 @@
     "babyCare": "Baby Care Pack",
     "BodyBuilding": "Body Building pack",
     "digestiveHealth": "Digestive Health pack",
-    "cosmetci": "Cosmetic products pack"
+    "cosmetci": "Cosmetic products pack",
+    "trendingCategories" :"Trending Categories",
+    "cards":"cards",
+    "SavedAddresses" : "Saved Addresses"
   },
   "arabic": {
-    "name": "الإنجليزية",
+    "name": "العربية",
     "home": "الصفحة الرئيسية",
     "searchMedicines": "البحث عن الأدوية",
     "categories": "الفئات",
@@ -97,7 +100,7 @@
     "forgotPassword": "<PASSWORD>",
     "logout": "تسجيل الخروج",
     "profile": "الملف الشخصي",
-    "myOrders": "طلباتي",
+    "myOrders": "الطلبات",
     "orderHistory": "تاريخ الطلبات",
     "cart": "العربة",
     "checkout": "الدفع",
@@ -107,7 +110,7 @@
     "noDataFound": "لم يتم العثور على بيانات!",
     "medicineName": "اسم الدواء",
     "quantity": "الكمية",
-    "pricePerUnit": "السعر للوحدة",
+    "pricePerUnit": "السعر ",
     "totalAmount": "المبلغ الإجمالي",
     "discount": "الخصم",
     "taxesAndCharges": "الضرائب والرسوم",
@@ -139,8 +142,8 @@
     "toothAche": "ألم في الأسنان",
     "eyeAhe": "ألم في العيون",
     "scanPrescription": "مسح الوصفة",
-    "ourPharmacies": "صيدلياتنا",
-    "chart": "الرسوم البيانية",
+    "ourPharmacies": "الصيدلبات",
+    "chart": "السلة",
     "account": "الحساب",
     "trackOrder": "تتبع الطلب",
     "packs": "حزم",
@@ -170,6 +173,11 @@
     "babyCare": "حزمة العناية بالطفل",
     "BodyBuilding": "حزمة بناء الجسم",
     "digestiveHealth": "حزمة الهضم والصحة",
-    "cosmetic": "حزمة منتجات التجميل"
+    "cosmetic": "حزمة منتجات التجميل",
+    "trendingCategories" :"الأصناف",
+    "cards":"البطاقات",
+    "SavedAddresses" :  "العناوين المسجلة  "
+
+
   }
 }
