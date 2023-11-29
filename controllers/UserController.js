@@ -88,12 +88,50 @@ const login = async (req, res) => {
 
       "RyyTwyqhIytpayn9cYA1KpXbD2GV1h2q"
     );
-    res.status(200).json({ token, name: user.fullName });
+    res.status(200).json({ token, name: user.fullName ,id:user._id});
 
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+const uploadProfileImage = async(req,res)=>{
+  try {
+    const userId = req.body.userId;
+    const imagePath = req.body.imagePath;
 
-module.exports = { register, login };
+
+    // Find the user by ID and update the img field with the image path
+    const user = await User.findByIdAndUpdate(userId, { img: imagePath }, { new: true });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json({ message: 'Profile image updated successfully', user });
+  } catch (error) {
+    console.error('Error uploading profile image:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+const getProfileImage = async(req,res)=>{
+  try {
+    const userId  = req.params.id;
+
+    // Find the user by ID and retrieve the img field
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const imagePath = user.img; // Assuming the path to the image is stored in the 'img' field
+
+    return res.status(200).json({ imagePath });
+  } catch (error) {
+    console.error('Error fetching profile image:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
+module.exports = { register, login,uploadProfileImage,getProfileImage };

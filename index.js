@@ -4,13 +4,14 @@ const mongoose = require("mongoose");
 const pharmacyRoutes = require("./routes/pharmacyRoutes");
 const medicineRoutes = require("./routes/medicineRoutes");
 const userRoutes = require("./routes/userRoutes");
-
 const app = express();
+
+
+
 const bodyParser = require("body-parser");
 
 //cors
 const cors = require("cors");
-const { getLanguageData } = require("./controllers/languageController");
 app.use(cors());
 // Middleware
 app.use(bodyParser.json());
@@ -35,7 +36,6 @@ mongoose.connection.on("connected", () => {
 
 app.use("/pharmacies", pharmacyRoutes);
 app.use("/medicines", medicineRoutes);
-app.use("/language", getLanguageData);
 app.use("/auth", userRoutes);
 
 const port = 3117;
