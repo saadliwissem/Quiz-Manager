@@ -88,50 +88,96 @@ const login = async (req, res) => {
 
       "RyyTwyqhIytpayn9cYA1KpXbD2GV1h2q"
     );
-    res.status(200).json({ token, name: user.fullName ,id:user._id});
-
+    res.status(200).json({ token, name: user.fullName, id: user._id });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
-const uploadProfileImage = async(req,res)=>{
+const uploadProfileImage = async (req, res) => {
   try {
     const userId = req.body.userId;
     const imagePath = req.body.imagePath;
 
-
     // Find the user by ID and update the img field with the image path
-    const user = await User.findByIdAndUpdate(userId, { img: imagePath }, { new: true });
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { img: imagePath },
+      { new: true }
+    );
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    return res.status(200).json({ message: 'Profile image updated successfully', user });
+    return res
+      .status(200)
+      .json({ message: "Profile image updated successfully", user });
   } catch (error) {
-    console.error('Error uploading profile image:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error uploading profile image:", error);
+    res.status(500).json({ message: "Server error" });
   }
-}
-const getProfileImage = async(req,res)=>{
+};
+const getProfileImage = async (req, res) => {
   try {
-    const userId  = req.params.id;
+    const userId = req.params.id;
 
     // Find the user by ID and retrieve the img field
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     const imagePath = user.img; // Assuming the path to the image is stored in the 'img' field
 
     return res.status(200).json({ imagePath });
   } catch (error) {
-    console.error('Error fetching profile image:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error fetching profile image:", error);
+    res.status(500).json({ message: "Server error" });
   }
-}
+};
+const changePassword = async (req, res) => {
+  try {
+    const newPassword = req.body.newpwd;
 
-module.exports = { register, login,uploadProfileImage,getProfileImage };
+    const userId = req.body.userId;
+    const currentPassword = req.body.currentpwd;
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Compare the provided current password with the user's stored password
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ error: "Current password is incorrect" });
+    }
+
+    // Hash the new password
+    const saltRounds = 10;
+    const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // Update the user's password with the new hashed password
+    user.password = hashedNewPassword;
+
+    // Save the updated user to the database
+    await user.save();
+
+    return res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    console.error("Error changing password:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  uploadProfileImage,
+  getProfileImage,
+  changePassword,
+};
