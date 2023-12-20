@@ -1,9 +1,12 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { check, validationResult } = require("express-validator");
+const { validationResult } = require("express-validator");
 const router = express.Router();
 const User = require("../models/User");
+const nodemailer = require("nodemailer");
+
+//send sms
 
 const register = async (req, res) => {
   try {
@@ -41,17 +44,90 @@ const register = async (req, res) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+    const verificationCode = Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit code
+
     // Create a new user
     const user = new User({
       fullName,
       email,
       phoneNumber,
       password: hashedPassword,
+      verificationCode: verificationCode,
     });
 
     // Save the user to the database
     await user.save();
-    res.status(201).json({ message: "User registered successfully" });
+    res
+      .status(201)
+      .json({ message: "User registered successfully", userId: user._id });
+
+    // Send a verification email
+    const transporter = nodemailer.createTransport({
+      service: "Gmail", // Specify your email service provider (e.g., Gmail, Outlook, etc.)
+      auth: {
+        user: "saadliwissem88@gmail.com", // Your email address
+        pass: "nynw jmuj tspl lcge", // Your email password or app-specific password
+      },
+    });
+
+    const mailOptions = {
+      from: "saadliwissem88@gmail.com",
+      to: email,
+      subject: "Account Verification",
+      text: `Your verification code is: ${verificationCode}. Welcome to pharma-Domi `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to send verification email" });
+      } else {
+        console.log("Email sent: " + info.response);
+        res.status(201).json({
+          message: "User registered successfully. Verification email sent.",
+        });
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+//verification code
+const CodeVerification = async (req, res) => {
+  try {
+    const verifyCode = async (userId, code) => {
+      try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+          return { error: "User not found", code: 404 };
+        }
+
+        if (user.verificationCode !== code) {
+          return { error: "Invalid verification code", code: 400 };
+        }
+
+        // Update user verification status
+        user.verified = true;
+        await user.save();
+
+        return { message: "User verified successfully", code: 200 };
+      } catch (error) {
+        console.error(error);
+        return { error: "Internal server error", code: 500 };
+      }
+    };
+
+    const { userId, code } = req.body;
+
+    const result = await verifyCode(userId, code);
+
+    if (result.error) {
+      return res.status(result.code).json({ error: result.error });
+    }
+
+    res.status(result.code).json({ message: result.message });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
@@ -180,4 +256,5 @@ module.exports = {
   uploadProfileImage,
   getProfileImage,
   changePassword,
+  CodeVerification,
 };
