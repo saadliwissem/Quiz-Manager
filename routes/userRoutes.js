@@ -1,6 +1,6 @@
 const express = require("express");
 const {
-register,login, uploadProfileImage, getProfileImage, changePassword, CodeVerification
+register,login, uploadProfileImage, getProfileImage, changePassword, CodeVerification, resendCode
 } = require("../controllers/UserController");
 const router = express.Router();
 
@@ -11,6 +11,8 @@ router.post("/uploadProfileImage",uploadProfileImage);
 router.get("/getProfileImage/:id",getProfileImage); 
 router.put("/changepwd",changePassword); 
 router.post("/verifyUser",CodeVerification); 
+router.post("/resendcode",resendCode); 
+
 
 
 

@@ -62,37 +62,43 @@ const register = async (req, res) => {
       .json({ message: "User registered successfully", userId: user._id });
 
     // Send a verification email
-    const transporter = nodemailer.createTransport({
-      service: "Gmail", // Specify your email service provider (e.g., Gmail, Outlook, etc.)
-      auth: {
-        user: "saadliwissem88@gmail.com", // Your email address
-        pass: "nynw jmuj tspl lcge", // Your email password or app-specific password
-      },
-    });
-
-    const mailOptions = {
-      from: "saadliwissem88@gmail.com",
-      to: email,
-      subject: "Account Verification",
-      text: `Your verification code is: ${verificationCode}. Welcome to pharma-Domi `,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error(error);
-        res.status(500).json({ error: "Failed to send verification email" });
-      } else {
-        console.log("Email sent: " + info.response);
-        res.status(201).json({
-          message: "User registered successfully. Verification email sent.",
-        });
-      }
-    });
+    sendVerifEmail(email, verificationCode);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+//send verification mail
+const sendVerifEmail = (email, verificationCode) => {
+  const transporter = nodemailer.createTransport({
+    service: "Gmail", // Specify your email service provider (e.g., Gmail, Outlook, etc.)
+    auth: {
+      user: "saadliwissem88@gmail.com", // Your email address
+      pass: "nynw jmuj tspl lcge", // Your email password or app-specific password
+    },
+  });
+
+  const mailOptions = {
+    from: "saadliwissem88@gmail.com",
+    to: email,
+    subject: "Account Verification",
+    text: `Your verification code is: ${verificationCode}. Welcome to pharma-Domi `,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to send verification email" });
+    } else {
+      console.log("Email sent: " + info.response);
+      res.status(201).json({
+        message: "User registered successfully. Verification email sent.",
+      });
+    }
+  });
+};
+
 //verification code
 const CodeVerification = async (req, res) => {
   try {
@@ -133,6 +139,39 @@ const CodeVerification = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+//resend verification code
+const resendCode = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const newVerificationCode = Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit code
+
+    // Check if email and newVerificationCode are present
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ error: "error occured please try again later" });
+    }
+
+    // Find the user by email
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update the verification code for the user
+    user.verificationCode = newVerificationCode;
+    await user.save();
+
+    // Perform operations with the provided email (e.g., sending verification email)
+    sendVerifEmail(user.email, newVerificationCode); // You can pass user._id or any user identifier
+
+    res.status(200).json({ message: "Verification code resent successfully" });
+  } catch (error) {
+    console.error("Error in resendCode:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 const login = async (req, res) => {
   try {
@@ -158,18 +197,25 @@ const login = async (req, res) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
+    // Check if the user is verified
+    if (!user.verified) {
+      return res
+        .status(403)
+        .json({ error: "Please verify your account", userId: user._id });
+    }
     // Generate a JSON Web Token (JWT) for authentication
     const token = jwt.sign(
       { userId: user._id },
-
       "RyyTwyqhIytpayn9cYA1KpXbD2GV1h2q"
     );
+
     res.status(200).json({ token, name: user.fullName, id: user._id });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 const uploadProfileImage = async (req, res) => {
   try {
     const userId = req.body.userId;
@@ -257,4 +303,5 @@ module.exports = {
   getProfileImage,
   changePassword,
   CodeVerification,
+  resendCode,
 };
