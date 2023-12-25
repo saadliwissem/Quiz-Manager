@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const pharmacyRoutes = require("./routes/pharmacyRoutes");
 const medicineRoutes = require("./routes/medicineRoutes");
 const userRoutes = require("./routes/userRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
+
 const app = express();
 
 
@@ -37,6 +39,8 @@ mongoose.connection.on("connected", () => {
 app.use("/pharmacies", pharmacyRoutes);
 app.use("/medicines", medicineRoutes);
 app.use("/auth", userRoutes);
+app.use("/dashboard",dashboardRoutes );
+
 
 const port = 3117;
 app.listen(port, () => {

@@ -11,6 +11,8 @@ const userSchema = new Schema({
   img: { type: String },
   verificationCode: { type: String, required: false },
   verified: { type: Boolean, required: false, default: false },
+  gender: { type: String, enum: ["male", "female"] }, // Enum restricts the value to 'male' or 'female'
+  age: { type: Number }, // Age as an integer
 });
 
 const User = mongoose.model("User", userSchema);

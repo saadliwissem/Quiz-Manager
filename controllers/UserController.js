@@ -10,7 +10,7 @@ const nodemailer = require("nodemailer");
 
 const register = async (req, res) => {
   try {
-    const { fullName, email, phoneNumber, password } = req.body;
+    const { fullName, email, phoneNumber, password, Age, Gender } = req.body;
 
     // Validate email format using a regular expression
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -22,7 +22,12 @@ const register = async (req, res) => {
     if (!phoneRegex.test(phoneNumber)) {
       return res.status(400).json({ error: "Invalid phone number format" });
     }
-
+    const ageRegex = /^\d+$/;
+    if (!ageRegex.test(Age)) {
+      return res.status(400).json({
+        error: "Invalid age format. Please enter numbers only for age.",
+      });
+    }
     // Check if the user with the provided email or phone number already exists
     const existingUser = await User.findOne({
       $or: [{ email }, { phoneNumber }],
@@ -53,6 +58,8 @@ const register = async (req, res) => {
       phoneNumber,
       password: hashedPassword,
       verificationCode: verificationCode,
+      gender: Gender,
+      age: Age,
     });
 
     // Save the user to the database
