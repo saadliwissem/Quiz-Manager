@@ -14,10 +14,12 @@ const pharmacySchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  phone: {
+    type: String,
+    required: true,
+  },
+  owner: { type: String, required: true },
   image: String,
-  reviews: Number,
-  rate: Number,
-  likes: Number,
 });
 
 // Create the Pharmacy model using the schema

@@ -13,6 +13,7 @@ const userSchema = new Schema({
   verified: { type: Boolean, required: false, default: false },
   gender: { type: String, enum: ["male", "female"] }, // Enum restricts the value to 'male' or 'female'
   age: { type: Number }, // Age as an integer
+  joinedAT: { type: Date, default: Date.now },
 });
 
 const User = mongoose.model("User", userSchema);
