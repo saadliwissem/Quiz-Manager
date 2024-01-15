@@ -14,10 +14,13 @@ const createPharmacy = async (req, res) => {
 
     // Check if the pharmacy with the same name already exists
     const existingPharmacy = await Pharmacy.findOne({ name: pharmacyName });
+    const existingPharmacyByPhone = await Pharmacy.findOne({ phone: phoneNumber });
     if (existingPharmacy) {
       return res.status(409).json({ error: "Pharmacy already exists" });
     }
-
+    if (existingPharmacyByPhone) {
+      return res.status(409).json({ error: "Phone number already exists" });
+    }
     // Create a new instance of the Pharmacy model with the extracted data
     const newPharmacy = new Pharmacy({
       name: pharmacyName,
