@@ -5,6 +5,8 @@ const pharmacyRoutes = require("./routes/pharmacyRoutes");
 const medicineRoutes = require("./routes/medicineRoutes");
 const userRoutes = require("./routes/userRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const DeliveryRoutes = require("./routes/DeliveryRoutes");
+
 
 const app = express();
 
@@ -40,6 +42,7 @@ app.use("/pharmacies", pharmacyRoutes);
 app.use("/medicines", medicineRoutes);
 app.use("/auth", userRoutes);
 app.use("/dashboard",dashboardRoutes );
+app.use("/deliveries",DeliveryRoutes );
 
 
 const port = 3117;
