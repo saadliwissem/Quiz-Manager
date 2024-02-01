@@ -5,14 +5,8 @@ const DeliveryPerson = require("../models/DeliveryPerson");
 const createDeliveryPerson = async (req, res) => {
   try {
     // Extract delivery person data from the request body
-    const {
-      fullName,
-      email,
-      phoneNumber,
-      cin,
-      address,
-      vehicleType,
-    } = req.body;
+    const { fullName, email, phoneNumber, cin, address, vehicleType } =
+      req.body;
 
     // Check if any field is empty
     const isAnyFieldEmpty = [
@@ -37,11 +31,9 @@ const createDeliveryPerson = async (req, res) => {
     // Check if the ID is a valid 8-digit number
     const isValidId = /^(0|1)\d{7}$/.test(cin);
     if (!isValidId) {
-      return res
-        .status(400)
-        .json({
-          error: "ID should be a valid 8-digit number starting with 0 or 1",
-        });
+      return res.status(400).json({
+        error: "ID should be a valid 8-digit number starting with 0 or 1",
+      });
     }
     // Create a new delivery person instance
     const newDeliveryPerson = new DeliveryPerson({
@@ -122,8 +114,29 @@ const createDelivery = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// get delivery people
+const getAllDeliveryPeople = async (req, res) => {
+  try {
+    // Retrieve all delivery people from the database
+    const deliveryPeople = await DeliveryPerson.find({});
+
+    // Check if there are no delivery people found
+    if (!deliveryPeople || deliveryPeople.length === 0) {
+      return res.status(404).json({ error: "No delivery people found" });
+    }
+
+    // Return the list of delivery people
+    res.status(200).json({ deliveryPeople });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   getAllDeliveries,
   createDelivery,
   createDeliveryPerson,
+  getAllDeliveryPeople
 };
