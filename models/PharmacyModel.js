@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-// Define the schema for the pharmacy
 const pharmacySchema = new mongoose.Schema({
   name: {
     type: String,
@@ -18,11 +17,17 @@ const pharmacySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  owner: { type: String, required: true },
+  owner: {
+    type: String,
+    required: true,
+  },
   image: String,
+  deliveries: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Delivery",
+  }],
 });
 
-// Create the Pharmacy model using the schema
 const Pharmacy = mongoose.model("Pharmacy", pharmacySchema);
 
 module.exports = Pharmacy;
