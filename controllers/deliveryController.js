@@ -90,6 +90,8 @@ const createDelivery = async (req, res) => {
       requestedBy,
       deliveryAddress,
       deliveryCost,
+      date,
+      status,
     } = req.body;
 
     // Create a new delivery instance
@@ -98,9 +100,9 @@ const createDelivery = async (req, res) => {
       deliveryPerson,
       fromPharmacy,
       requestedBy,
-      date: new Date(),
+      date: date,
       deliveryAddress,
-      status: "pending",
+      status: status,
       deliveryCost,
     });
 
@@ -138,5 +140,5 @@ module.exports = {
   getAllDeliveries,
   createDelivery,
   createDeliveryPerson,
-  getAllDeliveryPeople
+  getAllDeliveryPeople,
 };
