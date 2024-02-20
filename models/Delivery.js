@@ -6,24 +6,24 @@ const User = require("./User")
 
 
 const deliverySchema = new Schema({
-  items: [{ type: String, required: true }], // Array of items being delivered
+  items: [{  }], // Array of items being delivered
   deliveryPerson: {
     type: Schema.Types.ObjectId,
     ref: "DeliveryPerson",
-    required: true,
+    default: null
   }, // Reference to DeliveryPerson model
   fromPharmacy: {
     type: Schema.Types.ObjectId,
     ref: "Pharmacy",
-    required: true,
+    default: null
   }, // Reference to Pharmacy model
   requestedBy: { type: Schema.Types.ObjectId, ref: "User" }, // Reference to User model for the requester
   date: { type: Date, default: Date.now }, // Date of the delivery
-  deliveryAddress: { type: String, required: true },
+  deliveryAddress: { type: String},
   status: {
     type: String,
-    enum: ["pending", "delivered", "cancelled"],
-    default: "pending",
+    enum: ["waitingConfirmation","pending", "delivered", "cancelled"],
+    default: "waitingConfirmation", 
   },
   deliveryCost: { type: Number, required: true },
 });
