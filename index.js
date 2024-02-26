@@ -1,12 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const pharmacyRoutes = require("./routes/pharmacyRoutes");
-const medicineRoutes = require("./routes/medicineRoutes");
 const userRoutes = require("./routes/userRoutes");
-const dashboardRoutes = require("./routes/dashboardRoutes");
-const DeliveryRoutes = require("./routes/DeliveryRoutes");
-//const Delivery = require("./models/Delivery");
+const quizController = require("./controllers/quizController")
 const app = express();
 
 const bodyParser = require("body-parser");
@@ -36,23 +32,8 @@ mongoose.connection.on("connected", () => {
   console.log("db connected ");
 });
 
-app.use("/pharmacies", pharmacyRoutes);
-app.use("/medicines", medicineRoutes);
 app.use("/auth", userRoutes);
-app.use("/dashboard", dashboardRoutes);
-app.use("/deliveries", DeliveryRoutes);
-// const insertFakeDeliveries = async () => {
-//   try {
-//     const fakeDeliveries = require("./fakeDeliveries.json");
-
-//     // Insert fake deliveries into the database
-//     await Delivery.insertMany(fakeDeliveries);
-
-//     console.log("Fake deliveries inserted successfully");
-//   } catch (error) {
-//     console.error("Error inserting fake deliveries:", error);
-//   }
-// };
+app.use( quizController);
 
 const port = 3117;
 app.listen(port, () => {
